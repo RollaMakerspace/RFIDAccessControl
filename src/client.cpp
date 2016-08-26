@@ -11,6 +11,19 @@ string access_script = "https://access-control.rollamakerspace.com/get_key.php";
 
 int char2int(char input);
 
+/**
+	This function requests the key from a server for a specified card UID. If the server replies
+	with no access for that UID then this function will return a null pointer and false to the 
+	&has_access argument. If the server replies with a key then this function will return the 
+	key and set has_access to true.
+
+	@param[in] uid UID in hexadecimal string form
+	@param[in] area Area number
+	@param[out] has_access Boolean value indicating if the specified UID has access to the area
+	
+	@return Returns a vector<uint8_t> containing the 16 byte AES key for the specified UID or
+		a null pointer if the UID doesn't have access.
+*/
 std::vector<uint8_t>* get_key_and_access(string uid, int area, bool &has_access)
 {
 	has_access = false;
@@ -51,6 +64,12 @@ std::vector<uint8_t>* get_key_and_access(string uid, int area, bool &has_access)
 	return key_data;
 }
 
+/**
+	This function converts a single hex character into decimal form.
+
+	@param[in] input A single hexadecimal character
+	@return The 0-15 integer the hex input represents
+*/
 int char2int(char input)
 {
   if(input >= '0' && input <= '9')
