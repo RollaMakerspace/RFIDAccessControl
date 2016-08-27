@@ -1,15 +1,9 @@
-#include <iostream>
-#include "restclient-cpp/restclient.h"
-#include <string.h>
-#include "json.hpp"
-#include <cstdint>
+#include "client.h"
 
-using namespace std;
-using json = nlohmann::json;
-
-string access_script = "https://access-control.rollamakerspace.com/get_key.php";
-
-int char2int(char input);
+RFIDClient::RFIDClient(string access_script)
+{
+	m_access_script = access_script;
+}
 
 /**
 	This function requests the key from a server for a specified card UID. If the server replies
@@ -24,14 +18,14 @@ int char2int(char input);
 	@return Returns a vector<uint8_t> containing the 16 byte AES key for the specified UID or
 		a null pointer if the UID doesn't have access.
 */
-std::vector<uint8_t>* get_key_and_access(string uid, int area, bool &has_access)
+std::vector<uint8_t>* RFIDClient::get_key_and_access(string uid, int area, bool &has_access)
 {
 	has_access = false;
 	json j;
 	j["uid"] = uid;
 	j["area"] = area;
 
-	RestClient::Response r = RestClient::post(access_script, "text/json", j.dump());
+	RestClient::Response r = RestClient::post(m_access_script, "text/json", j.dump());
 
 	auto json_response = json::parse(r.body);
 
@@ -70,7 +64,7 @@ std::vector<uint8_t>* get_key_and_access(string uid, int area, bool &has_access)
 	@param[in] input A single hexadecimal character
 	@return The 0-15 integer the hex input represents
 */
-int char2int(char input)
+int RFIDClient::char2int(char input)
 {
   if(input >= '0' && input <= '9')
     return input - '0';
